@@ -135,7 +135,6 @@ function division(...anyNumber) {
 /* -------------------------------------------------------------------------- */
 /*                        Calculate numbers on display                        */
 /* -------------------------------------------------------------------------- */
-const conditions = ["+", "-", "*", "/"];
 
 function calculate() {
 	numberGiven = operation.textContent;
@@ -144,10 +143,6 @@ function calculate() {
 		// addition if plus sign exist
 		numberGiven = numberGiven.split("+");
 		answer.textContent = addition(...numberGiven);
-	} else if (numberGiven.includes("-")) {
-		// substract if minus sign exist
-		numberGiven = numberGiven.split("-");
-		answer.textContent = substraction(...numberGiven);
 	} else if (numberGiven.includes("*")) {
 		// multiply if star sign exist
 		numberGiven = numberGiven.split("*");
@@ -156,33 +151,38 @@ function calculate() {
 		// division if divide sign exist
 		numberGiven = numberGiven.split("/");
 		answer.textContent = division(...numberGiven);
+	} else if (numberGiven.includes("-")) {
+		// substract if minus sign exist
+
+		if (numberGiven[0] == "-") {
+			numberGiven = numberGiven.split("-");
+			numberGiven[0] = "0";
+			console.log(numberGiven);
+			answer.textContent = substraction(...numberGiven);
+		} else {
+			numberGiven = numberGiven.split("-");
+			answer.textContent = substraction(...numberGiven);
+		}
 	}
 }
 
 function checkOperator(op) {
+	let conditions = ["+", "-", "*", "/"];
+	let conditions2 = ["+", "*", "/"];
+
 	numberGiven = operation.textContent;
 
 	lastChar = numberGiven.slice(-1);
 	firstChar = numberGiven.slice(0);
 
 	if (
-		conditions.some(el => firstChar.includes(el)) ||
+		conditions2.some(el => firstChar.includes(el)) ||
 		conditions.some(el => lastChar.includes(el))
 	) {
 		console.log("hello ");
 		return;
 	} else {
-		if (conditions.some(el => numberGiven.includes(el))) {
-			calculate(op);
-			operation.textContent = "";
-			displayNumber(answer.textContent);
-			displayNumber(op);
-		} else if (answer.textContent != "" && operation.textContent == "") {
-			displayNumber(answer.textContent);
-			displayNumber(op);
-		} else {
-			displayNumber(op);
-		}
+		displayNumber(op);
 	}
 }
 
