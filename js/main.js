@@ -1,7 +1,6 @@
 /* -------------------------------------------------------------------------- */
 /*                        Declare element tag as variables                    */
 /* -------------------------------------------------------------------------- */
-
 const operation = document.querySelector("#operation");
 const answer = document.querySelector("#answer");
 const equalSign = document.querySelector("#equal-sign");
@@ -44,15 +43,11 @@ function displayNumber(anyNumber) {
 		? (operation.style.visibility = "visible")
 		: (operation.style.visibility = "visible");
 
-	let undoThis;
-
-	undoThis = anyNumber;
 	if (operation != undefined) {
 		operation.textContent += anyNumber;
 	} else {
 		operation.textContent = anyNumber;
 	}
-	console.log(anyNumber);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -61,11 +56,8 @@ function displayNumber(anyNumber) {
 
 function pressDecimal() {
 	currentDisplay = operation.textContent;
-	console.log(`firstindex ${currentDisplay.indexOf(".")}`);
-	console.log(` lastindex ${currentDisplay.lastIndexOf(".")}`);
 
 	if (currentDisplay.indexOf(".") != -1) {
-		console.log("exists!");
 		return;
 	} else {
 		displayNumber(".");
@@ -93,8 +85,7 @@ function pressEqual() {
 }
 
 function pressUndo() {
-	currentDisplay = operation.textContent;
-	console.log(currentDisplay);
+	let currentDisplay = operation.textContent;
 	currentDisplay = currentDisplay.slice(0, -1);
 	operation.textContent = currentDisplay;
 }
@@ -106,9 +97,7 @@ function pressUndo() {
 function addition(...anyNumber) {
 	let sum = parseFloat(anyNumber[0]);
 	for (i = 1; i < anyNumber.length; i++) {
-		console.log(`This is typeof ${typeof parseFloat(anyNumber[i])}`);
 		sum += parseFloat(anyNumber[i]);
-		console.log(`This is sum ${parseFloat(sum)}`);
 	}
 	return sum;
 }
@@ -116,16 +105,15 @@ function addition(...anyNumber) {
 function substraction(...anyNumber) {
 	let sum = parseFloat(anyNumber[0]);
 	for (i = 1; i < anyNumber.length; i++) {
-		console.log(`This is sum ${typeof parseFloat(anyNumber[i])}`);
 		sum -= parseFloat(anyNumber[i]);
 	}
+
 	return sum;
 }
 
 function multiplication(...anyNumber) {
 	let sum = parseFloat(anyNumber[0]);
 	for (i = 1; i < anyNumber.length; i++) {
-		console.log(`This is sum ${anyNumber[i]}`);
 		sum *= parseFloat(anyNumber[i]);
 	}
 	return sum;
@@ -134,7 +122,6 @@ function multiplication(...anyNumber) {
 function division(...anyNumber) {
 	let sum = parseFloat(anyNumber[0]);
 	for (i = 1; i < anyNumber.length; i++) {
-		console.log(`This is sum ${anyNumber[i]}`);
 		sum /= parseFloat(anyNumber[i]);
 	}
 
@@ -148,33 +135,57 @@ function division(...anyNumber) {
 /* -------------------------------------------------------------------------- */
 /*                        Calculate numbers on display                        */
 /* -------------------------------------------------------------------------- */
+const conditions = ["+", "-", "*", "/"];
 
 function calculate() {
 	numberGiven = operation.textContent;
-	console.log(numberGiven);
 
 	if (numberGiven.includes("+")) {
 		// addition if plus sign exist
 		numberGiven = numberGiven.split("+");
-		console.log(numberGiven);
 		answer.textContent = addition(...numberGiven);
 	} else if (numberGiven.includes("-")) {
 		// substract if minus sign exist
 		numberGiven = numberGiven.split("-");
-		console.log(numberGiven);
 		answer.textContent = substraction(...numberGiven);
 	} else if (numberGiven.includes("*")) {
 		// multiply if star sign exist
 		numberGiven = numberGiven.split("*");
-		console.log(numberGiven);
 		answer.textContent = multiplication(...numberGiven);
 	} else if (numberGiven.includes("/")) {
 		// division if divide sign exist
 		numberGiven = numberGiven.split("/");
-		console.log(numberGiven);
 		answer.textContent = division(...numberGiven);
 	}
 }
+
+function checkOperator(op) {
+	numberGiven = operation.textContent;
+
+	lastChar = numberGiven.slice(-1);
+	firstChar = numberGiven.slice(0);
+
+	if (
+		conditions.some(el => firstChar.includes(el)) ||
+		conditions.some(el => lastChar.includes(el))
+	) {
+		console.log("hello ");
+		return;
+	} else {
+		if (conditions.some(el => numberGiven.includes(el))) {
+			calculate(op);
+			operation.textContent = "";
+			displayNumber(answer.textContent);
+			displayNumber(op);
+		} else if (answer.textContent != "" && operation.textContent == "") {
+			displayNumber(answer.textContent);
+			displayNumber(op);
+		} else {
+			displayNumber(op);
+		}
+	}
+}
+
 /* -------------------------------------------------------------------------- */
 /*                       Onclick event for every button                       */
 /* -------------------------------------------------------------------------- */
@@ -200,19 +211,19 @@ period.addEventListener("click", () => {
 });
 
 add.addEventListener("click", () => {
-	displayNumber("+");
+	checkOperator("+");
 });
 
 substract.addEventListener("click", () => {
-	displayNumber("-");
+	checkOperator("-");
 });
 
 multiply.addEventListener("click", () => {
-	displayNumber("*");
+	checkOperator("*");
 });
 
 divide.addEventListener("click", () => {
-	displayNumber("/");
+	checkOperator("/");
 });
 
 zero.addEventListener("click", () => {
