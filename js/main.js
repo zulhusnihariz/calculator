@@ -54,14 +54,23 @@ function displayNumber(anyNumber) {
 /*               Function to display "."; if exists, do nothing               */
 /* -------------------------------------------------------------------------- */
 
+let count = 0;
 function pressDecimal() {
 	currentDisplay = operation.textContent;
 
-	if (currentDisplay.indexOf(".") != -1) {
+	lastDot = currentDisplay[currentDisplay.length - 1];
+	if (lastDot == "." || count > 0) {
 		return;
 	} else {
 		displayNumber(".");
+		count++;
+		console.log(count);
 	}
+}
+
+function resetCount() {
+	count = 0;
+	return count;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -96,8 +105,14 @@ function pressUndo() {
 
 function addition(...anyNumber) {
 	let sum = parseFloat(anyNumber[0]);
+
 	for (i = 1; i < anyNumber.length; i++) {
 		sum += parseFloat(anyNumber[i]);
+		console.log(sum);
+	}
+
+	if (isNaN(sum)) {
+		return (answer.textContent = "error");
 	}
 	return sum;
 }
@@ -108,6 +123,10 @@ function substraction(...anyNumber) {
 		sum -= parseFloat(anyNumber[i]);
 	}
 
+	if (isNaN(sum)) {
+		return (answer.textContent = "error");
+	}
+
 	return sum;
 }
 
@@ -116,6 +135,10 @@ function multiplication(...anyNumber) {
 	for (i = 1; i < anyNumber.length; i++) {
 		sum *= parseFloat(anyNumber[i]);
 	}
+
+	if (isNaN(sum)) {
+		return (answer.textContent = "error");
+	}
 	return sum;
 }
 
@@ -123,6 +146,10 @@ function division(...anyNumber) {
 	let sum = parseFloat(anyNumber[0]);
 	for (i = 1; i < anyNumber.length; i++) {
 		sum /= parseFloat(anyNumber[i]);
+	}
+
+	if (isNaN(sum)) {
+		return (answer.textContent = "error");
 	}
 
 	if (sum == Infinity) {
@@ -142,14 +169,19 @@ function calculate() {
 	if (numberGiven.includes("+")) {
 		// addition if plus sign exist
 		numberGiven = numberGiven.split("+");
+
 		answer.textContent = addition(...numberGiven);
 	} else if (numberGiven.includes("*")) {
 		// multiply if star sign exist
 		numberGiven = numberGiven.split("*");
+		console.log(numberGiven);
+
 		answer.textContent = multiplication(...numberGiven);
 	} else if (numberGiven.includes("/")) {
 		// division if divide sign exist
 		numberGiven = numberGiven.split("/");
+		console.log(numberGiven);
+
 		answer.textContent = division(...numberGiven);
 	} else if (numberGiven.includes("-")) {
 		// substract if minus sign exist
@@ -179,10 +211,17 @@ function checkOperator(op) {
 		conditions2.some(el => firstChar.includes(el)) ||
 		conditions.some(el => lastChar.includes(el))
 	) {
-		console.log("hello ");
 		return;
 	} else {
 		displayNumber(op);
+	}
+}
+
+function checkNaN() {
+	if (isNaN(answer.textContent)) {
+		return;
+	} else {
+		operation.textContent += answer.textContent;
 	}
 }
 
@@ -191,6 +230,7 @@ function checkOperator(op) {
 /* -------------------------------------------------------------------------- */
 
 clear.addEventListener("click", () => {
+	resetCount();
 	clearScreen();
 });
 
@@ -203,6 +243,8 @@ ans.addEventListener("click", () => {
 });
 
 equal.addEventListener("click", () => {
+	resetCount();
+
 	pressEqual();
 });
 
@@ -211,18 +253,26 @@ period.addEventListener("click", () => {
 });
 
 add.addEventListener("click", () => {
+	checkNaN();
+	resetCount();
 	checkOperator("+");
 });
 
 substract.addEventListener("click", () => {
+	checkNaN();
+	resetCount();
 	checkOperator("-");
 });
 
 multiply.addEventListener("click", () => {
+	checkNaN();
+	resetCount();
 	checkOperator("*");
 });
 
 divide.addEventListener("click", () => {
+	checkNaN();
+	resetCount();
 	checkOperator("/");
 });
 
